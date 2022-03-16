@@ -13,12 +13,19 @@
 
 <script setup>
     import * as request from '@/utils/request'
+    import dayjs from 'dayjs'
     let cli = async ()=>{
         ElMessage.success("xiaoxi")
         itemRefs.G.log(1)
         let url ='http://test.livejx.cn/fns/common/selectCityPermissions'
         let result = await request.Get(url,{token:localStorage.getItem('token'),username:localStorage.getItem('username')})
         console.log(result)
+        let a = getEntryDays('2022-03-03')
+        console.log(a)
+    }
+    let getEntryDays = (entryDate)=> {
+      const now = dayjs()
+      return +(now.diff(dayjs(entryDate), 'day')) + 1
     }
     let arr = [
         {name: 'A', id: 1},
