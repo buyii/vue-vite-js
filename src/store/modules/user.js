@@ -1,4 +1,5 @@
 // import { Module } from "vuex";
+import * as Api from '@/api/login'
   /**
    * Filter asynchronous routing tables by recursion
    * @param routes asyncRoutes
@@ -36,13 +37,8 @@ const store = {
             return accessedRoutes
             
         },
-        login(context, payload) {
-            console.log(payload)
-            // let accessedRoutes
-            // accessedRoutes = filterAsyncRoutes(payload)
-            // context.commit("setRouter", accessedRoutes);
-            // return accessedRoutes
-            
+        async login(context, payload) {
+            return await Api.login(payload)
         }
     },
     getters: {

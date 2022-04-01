@@ -46,8 +46,13 @@
         type="primary"
         style="width: 100%; margin-bottom: 30px; height: 40px;"
         @click.native.prevent="handleLogin(loginFormRef)"
-        >Login</el-button
-      >
+        >登录</el-button>
+        <el-button
+        :loading="loading"
+        type="primary"
+        style="width: 100%; margin-bottom: 30px; margin-left: 0; height: 40px;"
+        @click.native.prevent="handleRegister(loginFormRef)"
+        >注册</el-button>
     </el-form>
   </div>
 </template>
@@ -58,6 +63,7 @@ import { reactive, ref } from 'vue'
 import { useRoute, useRouter } from "vue-router"
 import { User, View, Lock } from '@element-plus/icons-vue'
 import { store } from '@/store';
+import * as Api from '@/api/login'
 const loginFormRef = ref()
 
 let loginForm = reactive({
@@ -83,16 +89,14 @@ let redirect = route.query.redirect
       }
     }
    const handleLogin = (formEl)=>{
-      console.log(1111);
-      console.log(loginForm);
       formEl.validate((valid) => {
         if (valid) {
           console.log(2222);
-          // this.$router.push({ path: this.redirect || '/' })
           loading.value = true;
-          store.dispatch("user/login", loginForm).then(() => {
+          store.dispatch("user/login", loginForm).then((res) => {
+            console.log(res)
             ElMessage.success("登录成功");
-            router.push({ path: redirect || "/" });
+            // router.push({ path: redirect || "/" });
             loading.value = true;
           }).catch((err) => {
             console.log(err);
@@ -103,6 +107,20 @@ let redirect = route.query.redirect
           return false;
         }
       });
+    }
+    const handleRegister = (formEl)=>{
+      formEl.validate((valid) => {
+        if (valid) {
+          Api.register(loginForm).then(res=>{
+            console.log(res)
+          }).catch(err=>{
+            console.log(err)
+          })
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      })
     }
 </script>
 <style lang="scss" scoped>
