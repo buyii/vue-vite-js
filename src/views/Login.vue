@@ -67,12 +67,12 @@ import * as Api from '@/api/login'
 const loginFormRef = ref()
 
 let loginForm = reactive({
-  username: null,
-  password: null,
+  username: 'admin',
+  password: 'admin1234',
 })
 const loginRules = reactive({
   username: [{ required: true, trigger: "blur" }],
-  password: [{ required: true, trigger: "blur" }],
+  password: [{ required: false, trigger: "blur" }],
   // username: [{ required: true, trigger: 'blur', validator: validateUsername }],
   // password: [{ required: true, trigger: 'blur', validator: validatePassword }]
 })
@@ -97,10 +97,10 @@ let redirect = route.query.redirect
             console.log(res)
             ElMessage.success("登录成功");
             // router.push({ path: redirect || "/" });
-            loading.value = true;
+            loading.value = false;
           }).catch((err) => {
             console.log(err);
-            loading.value = true;
+            loading.value = false;
           });
         } else {
           console.log("error submit!!");
@@ -143,7 +143,7 @@ $cursor: #fff;
     height: 40px;
     // width: 100%;
     flex: 1;
-    ::v-deep input {
+    :deep(input){
       border: 0px;
       background: transparent;
       -webkit-appearance: none;
