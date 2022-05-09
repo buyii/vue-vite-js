@@ -96,7 +96,8 @@ let redirect = route.query.redirect
           store.dispatch("user/login", loginForm).then((res) => {
             console.log(res)
             ElMessage.success("登录成功");
-            // router.push({ path: redirect || "/" });
+            localStorage.setItem('token',res.token)
+            router.push({ path: redirect || "/" });
             loading.value = false;
           }).catch((err) => {
             console.log(err);

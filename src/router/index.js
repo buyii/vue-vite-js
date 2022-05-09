@@ -63,9 +63,9 @@ router.beforeEach((to, from, next) => {
 	if (to.matched.some(record => record.meta.login)) {
 		if (localStorage.getItem('token') == 'undefined' || !localStorage.getItem('token')) {
 			// next()
-			// next({
-			// 	path: '/login',
-			// })
+			next({
+				path: '/login',
+			})
 		}
 	  }
 	next()
