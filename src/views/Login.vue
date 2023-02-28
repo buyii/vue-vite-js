@@ -44,85 +44,92 @@
       <el-button
         :loading="loading"
         type="primary"
-        style="width: 100%; margin-bottom: 30px; height: 40px;"
+        style="width: 100%; margin-bottom: 30px; height: 40px"
         @click.native.prevent="handleLogin(loginFormRef)"
-        >登录</el-button>
-        <el-button
+        >登录</el-button
+      >
+      <el-button
         :loading="loading"
         type="primary"
-        style="width: 100%; margin-bottom: 30px; margin-left: 0; height: 40px;"
+        style="width: 100%; margin-bottom: 30px; margin-left: 0; height: 40px"
         @click.native.prevent="handleRegister(loginFormRef)"
-        >注册</el-button>
+        >注册</el-button
+      >
     </el-form>
   </div>
 </template>
 
 <script setup>
 // import { validUsername } from '@/utils/validate'
-import { reactive, ref } from 'vue'
-import { useRoute, useRouter } from "vue-router"
-import { User, View, Lock } from '@element-plus/icons-vue'
-import { store } from '@/store';
-import * as Api from '@/api/login'
-const loginFormRef = ref()
+import { reactive, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { User, View, Lock } from "@element-plus/icons-vue";
+import { store } from "@/store";
+import * as Api from "@/api/login";
+const loginFormRef = ref();
 
 let loginForm = reactive({
-  username: 'admin',
-  password: 'admin1234',
-})
+  username: "admin",
+  password: "admin1234",
+});
 const loginRules = reactive({
   username: [{ required: true, trigger: "blur" }],
   password: [{ required: false, trigger: "blur" }],
   // username: [{ required: true, trigger: 'blur', validator: validateUsername }],
   // password: [{ required: true, trigger: 'blur', validator: validatePassword }]
-})
-let loading = ref(false)
-let passwordType = ref("password")
-let router = useRouter()
-let route = useRoute()
-let redirect = route.query.redirect
-   const showPwd = ()=> {
-      if (passwordType.value === "password") {
-        passwordType.value = "";
-      } else {
-        passwordType.value = "password";
-      }
+});
+let loading = ref(false);
+let passwordType = ref("password");
+let router = useRouter();
+let route = useRoute();
+let redirect = route.query.redirect;
+const showPwd = () => {
+  if (passwordType.value === "password") {
+    passwordType.value = "";
+  } else {
+    passwordType.value = "password";
+  }
+};
+const handleLogin = (formEl) => {
+  formEl.validate((valid) => {
+    if (valid) {
+      console.log(2222);
+      loading.value = true;
+      store
+        .dispatch("user/login", loginForm)
+        .then((res) => {
+          console.log(res);
+          ElMessage.success("登录成功");
+          // localStorage.setItem("token", res.token);
+          router.push({ path: redirect || "/" });
+          loading.value = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          loading.value = false;
+        });
+    } else {
+      console.log("error submit!!");
+      return false;
     }
-   const handleLogin = (formEl)=>{
-      formEl.validate((valid) => {
-        if (valid) {
-          console.log(2222);
-          loading.value = true;
-          store.dispatch("user/login", loginForm).then((res) => {
-            console.log(res)
-            ElMessage.success("登录成功");
-            localStorage.setItem('token',res.token)
-            router.push({ path: redirect || "/" });
-            loading.value = false;
-          }).catch((err) => {
-            console.log(err);
-            loading.value = false;
-          });
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
+  });
+};
+const handleRegister = (formEl) => {
+  formEl.validate((valid) => {
+    if (valid) {
+      Api.register(loginForm)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      console.log("error submit!!");
+      return false;
     }
-    const handleRegister = (formEl)=>{
-      formEl.validate((valid) => {
-        if (valid) {
-          Api.register(loginForm).then(res=>{
-            console.log(res)
-          }).catch(err=>{
-            console.log(err)
-          })
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      })
-    }
+  });
+};
 </script>
 <style lang="scss" scoped>
 $bg: #2d3a4b;
@@ -132,7 +139,6 @@ $light_gray: #eee;
 $bg: #283443;
 $light_gray: #fff;
 $cursor: #fff;
-
 
 .login-container {
   height: 100vh;
@@ -144,10 +150,16 @@ $cursor: #fff;
     height: 40px;
     // width: 100%;
     flex: 1;
-    :deep(input){
+
+    :deep(.el-input__wrapper) {
+      background-color: transparent;
+      box-shadow: none;
+      width: 100%;
+      padding: 0px;
+    }
+    :deep(input) {
       border: 0px;
       background: transparent;
-      -webkit-appearance: none;
       border-radius: 0px;
       padding: 12px 5px 12px 15px;
       color: $light_gray;
@@ -156,6 +168,7 @@ $cursor: #fff;
       box-shadow: none !important;
     }
   }
+
   .el-form-item {
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(0, 0, 0, 0.1);
@@ -163,6 +176,7 @@ $cursor: #fff;
     color: #454545;
     margin-bottom: 20px;
   }
+
   .login-form {
     position: relative;
     width: 440px;
