@@ -27,6 +27,7 @@ export default defineConfig({
   plugins: [
     AutoImport({
       resolvers: [ElementPlusResolver()],
+      dirs: ['src/composables'],
     }),
     Components({
       resolvers: [ElementPlusResolver()],

@@ -1,13 +1,10 @@
 
 export function loadModules() {
-    const context = import.meta.globEager("./*.js")
+    const context = import.meta.glob("./*.js",{ eager: true })
     const modules = {};
-
-    Object.keys(context).forEach((key) => {
-        if (key === "./index.js") return;
-        modules[key.replace(/(\.\/|\.js)/g, '')] = context[key].default
-    });
-    
+    for (const path in context) {
+        modules[path.replace(/(\.\/|\.js)/g, '')] = context[path].default
+    }
     return { context, modules }
 }
 

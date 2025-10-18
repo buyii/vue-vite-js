@@ -4,20 +4,15 @@ import { useStore } from 'vuex';
 import LayOut from '../layout/index.vue'
 
 export function loadModules() {
-    const context = import.meta.globEager("./*.js");
-
+	const context = import.meta.glob("./*.js",{ eager: true })
     const modules = [];
-
-    Object.keys(context).forEach((key) => {
-        if (key === "./index.js") return;
-        modules.push(context[key].default)
-    });
-    
-    return { modules }
+	  for (const path in context) {
+		modules.push(context[path].default)
+    }
+    return modules
 }
 
-let { modules } = loadModules()
-
+let modules = loadModules()
 export const routeArr = modules.flat()
 export const Routes = [
 	{
@@ -53,7 +48,7 @@ export const Routes = [
 		hidden: true
 	},
 ]
-store.dispatch("user/setRouter", modules)
+store.dispatch('user/setRouter', modules)
 const router = createRouter({
     history: createWebHistory(),
     routes: Routes
@@ -62,10 +57,11 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
 	if (to.matched.some(record => record.meta.login)) {
 		if (localStorage.getItem('token') == 'undefined' || !localStorage.getItem('token')) {
-			// next()
-			next({
-				path: '/login',
-			})
+			next()
+			// next({
+			// 	path: '/login',
+			// })
+			return
 		}
 	  }
 	next()
